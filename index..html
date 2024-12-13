@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Name to Supabase</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <h1>Enter Your Name</h1>
+    <form id="nameForm">
+        <input type="text" id="nameInput" placeholder="Your name" required>
+        <button type="submit">Save</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = "YOUR_SUPABASE_URL";
+        const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Handle form submission
+        const form = document.getElementById('nameForm');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('nameInput').value;
+
+            try {
+                // Insert name into Supabase
+                const { data, error } = await supabase
+                    .from('names')
+                    .insert([{ name }]);
+
+                if (error) {
+                    message.textContent = "Error: " + error.message;
+                } else {
+                    message.textContent = "Name saved successfully!";
+                    form.reset();
+                }
+            } catch (err) {
+                message.textContent = "Unexpected error occurred!";
+            }
+        });
+    </script>
+</body>
+</html>
